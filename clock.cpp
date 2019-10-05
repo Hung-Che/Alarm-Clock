@@ -4,7 +4,7 @@
 RTC_DS1307 rtc;
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 const int buzzerPin = 10;
-const int snoozePin = 9;
+const int snoozePin = 13;
 
 void setup() {
   lcd.begin(16, 2);
@@ -17,16 +17,16 @@ void setup() {
 void loop() {
     DateTime now = rtc.now();
     lcd.setCursor(0, 0);
+    if(now.hour()<10)lcd.print("0");
     lcd.print(now.hour());
     lcd.print(':');
+    if(now.minute()<10)lcd.print("0");
     lcd.print(now.minute());
     lcd.print(':');
-    if(now.second()<10){
-      lcd.print("0");
-    }
+    if(now.second()<10)lcd.print("0");
     lcd.print(now.second());
     lcd.print("    ");
-    alarm(19, 58, 00);
+    alarm(22,02, 00);
     snooze();
 }
 void alarm(int h, int m, int s){
@@ -36,8 +36,9 @@ void alarm(int h, int m, int s){
   }
 }
 void snooze(){
-  if(digitalRead(buzzerPin)==HIGH){
-    lcd.setCursor(0,1);
-    lcd.print("bingo");
+  while(digitalRead(buzzerPin)==HIGH){
+     if(digitalRead(snoozePin)==HIGH){
+        noTone(buzzerPin);
+     }
   }
 }
