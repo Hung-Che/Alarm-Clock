@@ -1,20 +1,38 @@
+
+#include <IRremote.h>
+#include <IRremoteInt.h>
 #include <LiquidCrystal.h> 
 #include "RTClib.h"
-
+/**
+ * Go to boarddefs.h 
+ * // Arduino Duemilanove, Diecimila, LilyPad, Mini, Fio, Nano, etc
+ * #else
+ * #define IR_USE_TIMER1    tx = pin 9
+ * //#define IR_USE_TIMER2    // tx = pin 3
+ */
 RTC_DS1307 rtc;
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 const int buzzerPin = 10;
 const int snoozePin = 13;
+int RECV_PIN = 9;
+IRrecv irrecv(RECV_PIN);
+decode_results results;
 
 void setup() {
   lcd.begin(16, 2);
   Serial.begin(9600);
+  irrecv.enableIRIn();
   if(rtc.begin()&&rtc.isrunning()){
     rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   }
 }
 
 void loop() {
+   if (irrecv.decode(&results)) {
+    Serial.println(results.value, HEX);
+    irrecv.resume(); // Receive the next value
+  }
+  delay(100);
     DateTime now = rtc.now();
     lcd.setCursor(0, 0);
     if(now.hour()<10)lcd.print("0");
