@@ -28,11 +28,6 @@ void setup() {
 }
 
 void loop() {
-   if (irrecv.decode(&results)) {
-    Serial.println(results.value, HEX);
-    irrecv.resume(); // Receive the next value
-  }
-  delay(100);
     DateTime now = rtc.now();
     lcd.setCursor(0, 0);
     if(now.hour()<10)lcd.print("0");
@@ -44,7 +39,7 @@ void loop() {
     if(now.second()<10)lcd.print("0");
     lcd.print(now.second());
     lcd.print("    ");
-    alarm(22,02, 00);
+    getAlarm();
     snooze();
 }
 void alarm(int h, int m, int s){
@@ -59,4 +54,156 @@ void snooze(){
         noTone(buzzerPin);
      }
   }
+}
+void getAlarm(){
+  int a = 0;
+  int h = 0;
+  int m = 0;
+  int s = 0;
+  if (irrecv.decode(&results)){
+    if(a==0){
+      if(results.value==0xFF02FD){
+        h = getHour();
+        a++;
+      }
+    }
+    if(a==1){
+      if(results.value==0xFF02FD){
+        m = getMinute();
+        a++;
+      }
+    }
+    if(a==2){
+      if(results.value==0xFF02FD){
+        s = getSecond();
+      }
+    }
+  }
+  alarm(h,m,s);
+}
+int getHour(){
+  int a = 0;
+  if (irrecv.decode(&results)) {
+    while(a<24){
+      lcd.setCursor(0,1);
+      switch(results.value){
+        case 0xFF6897: a = a*10 + 0;
+        lcd.print(a);
+        break;
+        case 0xFF30CF: a = a*10 + 1;
+        lcd.print(a);
+        break;
+        case 0xFF18E7: a = a*10+2;
+        lcd.print(a);
+        break;
+        case 0xFF7A85: a = a*10+3;
+        lcd.print(a);
+        break;
+        case 0xFF10EF: a = a*10+4;
+        lcd.print(a);
+        break;
+        case 0xFF38C7: a = a*10+5;
+        lcd.print(a);
+        break;
+        case 0xFF5AA5: a = a*10+6;
+        lcd.print(a);
+        break;
+        case 0xFF42BD: a = a*10+7;
+        lcd.print(a);
+        break;
+        case 0xFF4AB5: a = a*10 +8;
+        lcd.print(a);
+        break;
+        case 0xFF52AD: a = a*10+9;
+        lcd.print(a);
+        break;
+      }
+      irrecv.resume();  
+    }
+  }
+  return a;
+}
+int getMinute(){
+  int a = 0;
+  if (irrecv.decode(&results)) {
+    while(a<60){
+      lcd.setCursor(0,1);
+      switch(results.value){
+        case 0xFF6897: a = a*10 + 0;
+        lcd.print(a);
+        break;
+        case 0xFF30CF: a = a*10 + 1;
+        lcd.print(a);
+        break;
+        case 0xFF18E7: a = a*10+2;
+        lcd.print(a);
+        break;
+        case 0xFF7A85: a = a*10+3;
+        lcd.print(a);
+        break;
+        case 0xFF10EF: a = a*10+4;
+        lcd.print(a);
+        break;
+        case 0xFF38C7: a = a*10+5;
+        lcd.print(a);
+        break;
+        case 0xFF5AA5: a = a*10+6;
+        lcd.print(a);
+        break;
+        case 0xFF42BD: a = a*10+7;
+        lcd.print(a);
+        break;
+        case 0xFF4AB5: a = a*10 +8;
+        lcd.print(a);
+        break;
+        case 0xFF52AD: a = a*10+9;
+        lcd.print(a);
+        break;
+      }
+      irrecv.resume();  
+    }
+  }
+  return a;
+}
+int getSecond(){
+  int a = 0;
+  if (irrecv.decode(&results)) {
+    while(a<60){
+      lcd.setCursor(0,1);
+      switch(results.value){
+        case 0xFF6897: a = a*10 + 0;
+        lcd.print(a);
+        break;
+        case 0xFF30CF: a = a*10 + 1;
+        lcd.print(a);
+        break;
+        case 0xFF18E7: a = a*10+2;
+        lcd.print(a);
+        break;
+        case 0xFF7A85: a = a*10+3;
+        lcd.print(a);
+        break;
+        case 0xFF10EF: a = a*10+4;
+        lcd.print(a);
+        break;
+        case 0xFF38C7: a = a*10+5;
+        lcd.print(a);
+        break;
+        case 0xFF5AA5: a = a*10+6;
+        lcd.print(a);
+        break;
+        case 0xFF42BD: a = a*10+7;
+        lcd.print(a);
+        break;
+        case 0xFF4AB5: a = a*10 +8;
+        lcd.print(a);
+        break;
+        case 0xFF52AD: a = a*10+9;
+        lcd.print(a);
+        break;
+      }
+      irrecv.resume();  
+    }
+  }
+  return a;
 }
