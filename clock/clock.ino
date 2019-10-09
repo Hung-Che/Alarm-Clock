@@ -69,7 +69,7 @@ void getAlarm(){
       delay(100);
     }
     Serial.println(setAlarm);
-    while(a==1){
+    while(setAlarm==0){
       lcd.setCursor(0,0);
       lcd.print("Set Hour");
       lcd.setCursor(0,1);
@@ -83,5 +83,6 @@ void getAlarm(){
       }
       lcd.print(a);
     }
+    Serial.println(results.value, HEX);
   }
 }
