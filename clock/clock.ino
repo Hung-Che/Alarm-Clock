@@ -44,7 +44,7 @@ void loop() {
     lcd.print(':');
     if(now.second()<10)lcd.print("0");
     lcd.print(now.second());
-    lcd.print("    ");
+    lcd.print("     ");
     getAlarm();
     snooze();
 }
@@ -63,9 +63,11 @@ void snooze(){
 }
 void getAlarm(){
   if (irrecv.decode(&results)){
+    Serial.println(results.value, HEX);
+    irrecv.resume();
     if(results.value==0xFFB04F){
         setAlarm=1;
-      delay(150);
+      delay(300);
     }else if(results.value==0xFFFFFFFF){
       setAlarm = setAlarm;  
     }
