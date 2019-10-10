@@ -20,6 +20,8 @@ decode_results results;
 long num[10] = {0xFF6897, 0xFF30CF, 0xFF18E7, 0xFF7A85, 0xFF10EF, 0xFF38C7, 0xFF5AA5, 0xFF42BD, 0xFF4AB5, 0xFF52AD};
 unsigned long key_value = 0;
 int a = 0;
+int b = 0;
+int c = 0;
 int setAlarm = 0;
 
 void setup() {
@@ -62,27 +64,88 @@ void snooze(){
 void getAlarm(){
   if (irrecv.decode(&results)){
     if(results.value==0xFFB04F){
-      if(setAlarm>=4){
-        setAlarm=0;}
-      else {
-        setAlarm++;}
-      delay(100);
+        setAlarm=1;
+      delay(150);
+    }else if(results.value==0xFFFFFFFF){
+      setAlarm = setAlarm;  
     }
-    Serial.println(setAlarm);
-    while(setAlarm==0){
+  }
+    while(setAlarm==1){
       lcd.setCursor(0,0);
       lcd.print("Set Hour");
       lcd.setCursor(0,1);
+      if(irrecv.decode(&results)){
+        for(int i = 0; i<10; i++){
+          if(results.value==num[i]){
+            a = a*10+i;
+          }else if(results.value==0xFFFFFFFF){
+            a = a;  
+          }
+          irrecv.resume();
+        }
+        lcd.print(a);
+        if(results.value==0xFFB04F){
+          setAlarm=2;
+        }
+      }
+    }
+    while(setAlarm==2){
+      lcd.setCursor(0,0);
+      lcd.print("Set Minute");
+      lcd.setCursor(0,1);
+      if(irrecv.decode(&results)){
       for(int i = 0; i<10; i++){
         if(results.value==num[i]){
-          a = a*10+i;
+          b = b*10+i;
         }else if(results.value==0xFFFFFFFF){
-          a = a;  
+          b = b;  
+        }else if(results.value==0xFFB04F){
+            setAlarm++;
         }
         irrecv.resume();
       }
-      lcd.print(a);
+      lcd.print(b);
+      if(results.value==0xFFB04F){
+          setAlarm=3;
+        }
+      }
     }
-    Serial.println(results.value, HEX);
+    while(setAlarm==3){
+      lcd.setCursor(0,0);
+      lcd.print("Get Second");
+      lcd.setCursor(0,1);
+      if(irrecv.decode(&results)){
+        for(int i = 0; i<10; i++){
+          if(results.value==num[i]){
+           c = c*10+i;
+          }else if(results.value==0xFFFFFFFF){
+            c = c;  
+          }else if(results.value==0xFFB04F){
+            setAlarm++;
+          }
+          irrecv.resume();
+        }
+        lcd.print(c);
+        if(results.value==0xFFB04F){
+          setAlarm=4;
+        }
+      }
+    }
+    while(setAlarm==4){
+      lcd.setCursor(0,0);
+      lcd.print("Set Alarm to:");
+      lcd.setCursor(0,1);
+      lcd.print(a);
+      lcd.print(':');
+      lcd.print(b);
+      lcd.print(':');
+      lcd.print(c);
+      if(results.value==0xFFB04F){
+        setAlarm=0;
+      }
+    }
+    DateTime now = rtc.now();
+    if(now.hour()==a && now.minute()==b && now.second()==c){
+      tone(buzzerPin, 100);
+    }
   }
-}
