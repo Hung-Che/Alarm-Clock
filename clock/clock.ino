@@ -85,7 +85,12 @@ void getAlarm(){
           }
           irrecv.resume();
         }
-        lcd.print(a);
+        if(a<24){
+          lcd.print(a);
+        }else{
+          lcd.print("Invalid");
+          setAlarm=0;
+        }
         if(results.value==0xFFB04F){
           setAlarm=2;
         }
@@ -106,7 +111,14 @@ void getAlarm(){
         }
         irrecv.resume();
       }
-      lcd.print(b);
+      lcd.print(a);
+      lcd.print(':');
+      if(b<60){
+        lcd.print(b);
+      }else{
+        lcd.print("Invalid");
+        setAlarm=1;
+      }
       if(results.value==0xFFB04F){
           setAlarm=3;
         }
@@ -114,7 +126,7 @@ void getAlarm(){
     }
     while(setAlarm==3){
       lcd.setCursor(0,0);
-      lcd.print("Get Second");
+      lcd.print("Set Second");
       lcd.setCursor(0,1);
       if(irrecv.decode(&results)){
         for(int i = 0; i<10; i++){
@@ -127,6 +139,16 @@ void getAlarm(){
           }
           irrecv.resume();
         }
+        lcd.print(a);
+        lcd.print(':');
+        lcd.print(b);
+        lcd.print(':');
+        if(c<60){
+          lcd.print(c);
+        }else{
+          lcd.print("Invalid");
+          setAlarm=2;
+        }
         lcd.print(c);
         if(results.value==0xFFB04F){
           setAlarm=4;
@@ -134,13 +156,15 @@ void getAlarm(){
       }
     }
     while(setAlarm==4){
-      lcd.setCursor(0,0);
-      lcd.print("Set Alarm to:");
       lcd.setCursor(0,1);
+      lcd.print("Alarm-");
+      if(a<10)lcd.print("0");
       lcd.print(a);
       lcd.print(':');
+      if(b<10)lcd.print("0");
       lcd.print(b);
       lcd.print(':');
+      if(c<10)lcd.print("0");
       lcd.print(c);
       if(results.value==0xFFB04F){
         setAlarm=0;
