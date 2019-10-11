@@ -18,7 +18,6 @@ int RECV_PIN = 9;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
 long num[10] = {0xFF6897, 0xFF30CF, 0xFF18E7, 0xFF7A85, 0xFF10EF, 0xFF38C7, 0xFF5AA5, 0xFF42BD, 0xFF4AB5, 0xFF52AD};
-unsigned long key_value = 0;
 int a = 0;
 int b = 0;
 int c = 0;
@@ -47,12 +46,6 @@ void loop() {
     lcd.print("     ");
     getAlarm();
     snooze();
-}
-void alarm(int h, int m, int s){
-  DateTime now = rtc.now();
-  if(now.hour()==h && now.minute()==m && now.second()==s){
-    tone(buzzerPin, 100);
-  }
 }
 void snooze(){
   while(digitalRead(buzzerPin)==HIGH){
