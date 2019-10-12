@@ -81,8 +81,13 @@ void getAlarm(){
         if(a<24){
           lcd.print(a);
         }else{
+          lcd.clear();
           lcd.print("Invalid");
-          setAlarm=0;
+          if(irrecv.decode(&results)){
+            lcd.clear();
+            setAlarm=0;
+            a=0;
+          }
         }
         if(results.value==0xFFB04F){
           setAlarm=2;
@@ -109,8 +114,13 @@ void getAlarm(){
       if(b<60){
         lcd.print(b);
       }else{
+        lcd.clear();
         lcd.print("Invalid");
-        setAlarm=1;
+        if(irrecv.decode(&results)){
+          lcd.clear();
+          setAlarm=1;
+          b=0;
+        }
       }
       if(results.value==0xFFB04F){
           setAlarm=3;
@@ -139,8 +149,13 @@ void getAlarm(){
         if(c<60){
           lcd.print(c);
         }else{
+          lcd.clear();
           lcd.print("Invalid");
-          setAlarm=2;
+          if(irrecv.decode(&results)){
+            lcd.clear();
+            setAlarm=2;
+            c=0;
+          }
         }
         lcd.print(c);
         if(results.value==0xFFB04F){
@@ -166,5 +181,8 @@ void getAlarm(){
     DateTime now = rtc.now();
     if(now.hour()==a && now.minute()==b && now.second()==c){
       tone(buzzerPin, 100);
+      a=0;
+      b=0;
+      c=0;
     }
   }
