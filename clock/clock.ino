@@ -14,7 +14,6 @@
 RTC_DS1307 rtc;
 LiquidCrystal lcd(12, 11, 5, 4, 3, 2);
 const int buzzerPin = 10;
-const int snoozePin = 13;
 int RECV_PIN = 9;
 IRrecv irrecv(RECV_PIN);
 decode_results results;
@@ -198,7 +197,7 @@ void getAlarm(){
       }
       lcd.print(d);
     }
-    if(digitalRead(snoozePin)==HIGH&&d==ans){
+    if(d==ans){
       noTone(buzzerPin);
       setAlarm=0;
       lcd.setCursor(0,1);
