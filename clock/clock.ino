@@ -192,6 +192,7 @@ void getAlarm(){
           d = d*10+i;
         }else if(results.value==0xFFA25D){
           d=0;
+          lcd.print("        ");
         }
         irrecv.resume();
       }
